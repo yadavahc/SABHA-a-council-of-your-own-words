@@ -1,0 +1,403 @@
+{
+  "_comment": "Replayed by /simulate?scenario=<name>. Payloads use Omi's exact webhook formats: real-time = JSON array of segments posted to /omi/realtime?session_id=&uid= ; memory_created = conversation object posted to /omi/memory-created?uid=",
+  "uid": "demo-user",
+  "scenarios": {
+    "memories": {
+      "session_id": "sim-memories",
+      "events": [
+        {
+          "delay": 0.5,
+          "realtime": [
+            {
+              "text": "So I had a call with Meera from the startup today.",
+              "speaker": "SPEAKER_00",
+              "speakerId": 0,
+              "is_user": true,
+              "start": 0.0,
+              "end": 3.1
+            }
+          ]
+        },
+        {
+          "delay": 2.0,
+          "realtime": [
+            {
+              "text": "She said I'd own the whole battery dashboard from day one, which honestly excites me.",
+              "speaker": "SPEAKER_00",
+              "speakerId": 0,
+              "is_user": true,
+              "start": 3.4,
+              "end": 8.0
+            }
+          ]
+        },
+        {
+          "delay": 2.2,
+          "realtime": [
+            {
+              "text": "But I'm worried the MNC salary is the only way to clear my loan in three years.",
+              "speaker": "SPEAKER_00",
+              "speakerId": 0,
+              "is_user": true,
+              "start": 8.5,
+              "end": 13.0
+            }
+          ]
+        },
+        {
+          "delay": 0.3,
+          "realtime": [
+            {
+              "text": "But I'm worried the MNC salary is the only way to clear my loan in three years.",
+              "speaker": "SPEAKER_00",
+              "speakerId": 0,
+              "is_user": true,
+              "start": 8.5,
+              "end": 13.0
+            }
+          ]
+        },
+        {
+          "delay": 2.2,
+          "realtime": [
+            {
+              "text": "My landlord's number is 91234 56789 if anything comes up with the flat.",
+              "speaker": "SPEAKER_00",
+              "speakerId": 0,
+              "is_user": true,
+              "start": 13.5,
+              "end": 17.2
+            }
+          ]
+        },
+        {
+          "delay": 2.0,
+          "realtime": [
+            {
+              "text": "um okay",
+              "speaker": "SPEAKER_00",
+              "speakerId": 0,
+              "is_user": true,
+              "start": 17.5,
+              "end": 18.0
+            }
+          ]
+        },
+        {
+          "delay": 2.0,
+          "realtime": [
+            {
+              "text": "I really don't want to spend my twenties doing work I don't believe in.",
+              "speaker": "SPEAKER_00",
+              "speakerId": 0,
+              "is_user": true,
+              "start": 18.4,
+              "end": 22.0
+            }
+          ]
+        },
+        {
+          "delay": 3.0,
+          "memory_created": {
+            "id": "sim-conv-1",
+            "created_at": "2026-09-27T18:30:00+05:30",
+            "started_at": "2026-09-27T18:25:00+05:30",
+            "finished_at": "2026-09-27T18:29:40+05:30",
+            "transcript_segments": [
+              {
+                "text": "So I had a call with Meera from the startup today.",
+                "speaker": "SPEAKER_00",
+                "speakerId": 0,
+                "is_user": true,
+                "start": 0.0,
+                "end": 3.1
+              },
+              {
+                "text": "She said I'd own the whole battery dashboard from day one, which honestly excites me.",
+                "speaker": "SPEAKER_00",
+                "speakerId": 0,
+                "is_user": true,
+                "start": 3.4,
+                "end": 8.0
+              },
+              {
+                "text": "But I'm worried the MNC salary is the only way to clear my loan in three years.",
+                "speaker": "SPEAKER_00",
+                "speakerId": 0,
+                "is_user": true,
+                "start": 8.5,
+                "end": 13.0
+              },
+              {
+                "text": "My landlord's number is 91234 56789 if anything comes up with the flat.",
+                "speaker": "SPEAKER_00",
+                "speakerId": 0,
+                "is_user": true,
+                "start": 13.5,
+                "end": 17.2
+              },
+              {
+                "text": "I really don't want to spend my twenties doing work I don't believe in.",
+                "speaker": "SPEAKER_00",
+                "speakerId": 0,
+                "is_user": true,
+                "start": 18.4,
+                "end": 22.0
+              },
+              {
+                "text": "I keep coming back to what Prof. Rao said about cheap risks at twenty two.",
+                "speaker": "SPEAKER_00",
+                "speakerId": 0,
+                "is_user": true,
+                "start": 22.5,
+                "end": 26.0
+              }
+            ],
+            "structured": {
+              "title": "Startup call with Meera",
+              "overview": "User reflects on the startup offer and loan worries.",
+              "emoji": "💼",
+              "category": "career",
+              "action_items": [],
+              "events": []
+            },
+            "apps_response": [],
+            "discarded": false
+          }
+        }
+      ]
+    },
+    "question": {
+      "session_id": "sim-question",
+      "events": [
+        {
+          "delay": 0.5,
+          "realtime": [
+            {
+              "text": "Sabha,",
+              "speaker": "SPEAKER_00",
+              "speakerId": 0,
+              "is_user": true,
+              "start": 0.0,
+              "end": 0.8
+            }
+          ]
+        },
+        {
+          "delay": 0.8,
+          "realtime": [
+            {
+              "text": "should I join the startup or the MNC offer?",
+              "speaker": "SPEAKER_00",
+              "speakerId": 0,
+              "is_user": true,
+              "start": 0.9,
+              "end": 3.5
+            }
+          ]
+        }
+      ]
+    },
+    "interrupt": {
+      "session_id": "sim-interrupt",
+      "events": [
+        {
+          "delay": 0.3,
+          "realtime": [
+            {
+              "text": "Sabha, I also care about staying close to my parents in Bengaluru.",
+              "speaker": "SPEAKER_00",
+              "speakerId": 0,
+              "is_user": true,
+              "start": 0.0,
+              "end": 4.0
+            }
+          ]
+        }
+      ]
+    },
+    "next": {
+      "session_id": "sim-next",
+      "events": [
+        {
+          "delay": 0.3,
+          "realtime": [
+            {
+              "text": "Sabha, next round.",
+              "speaker": "SPEAKER_00",
+              "speakerId": 0,
+              "is_user": true,
+              "start": 0.0,
+              "end": 1.5
+            }
+          ]
+        }
+      ]
+    },
+    "seal": {
+      "session_id": "sim-seal",
+      "events": [
+        {
+          "delay": 0.3,
+          "realtime": [
+            {
+              "text": "Honestly I sometimes feel I'm only doing engineering because my father wanted it.",
+              "speaker": "SPEAKER_00",
+              "speakerId": 0,
+              "is_user": true,
+              "start": 0.0,
+              "end": 4.0
+            }
+          ]
+        },
+        {
+          "delay": 3.0,
+          "realtime": [
+            {
+              "text": "Sabha, seal that.",
+              "speaker": "SPEAKER_00",
+              "speakerId": 0,
+              "is_user": true,
+              "start": 4.5,
+              "end": 5.5
+            }
+          ]
+        }
+      ]
+    },
+    "offrecord": {
+      "session_id": "sim-off",
+      "events": [
+        {
+          "delay": 0.3,
+          "realtime": [
+            {
+              "text": "Sabha, off the record.",
+              "speaker": "SPEAKER_00",
+              "speakerId": 0,
+              "is_user": true,
+              "start": 0.0,
+              "end": 1.4
+            }
+          ]
+        },
+        {
+          "delay": 2.5,
+          "realtime": [
+            {
+              "text": "I think my manager at the internship was pretty unfair to me.",
+              "speaker": "SPEAKER_00",
+              "speakerId": 0,
+              "is_user": true,
+              "start": 1.8,
+              "end": 4.6
+            }
+          ]
+        },
+        {
+          "delay": 2.5,
+          "realtime": [
+            {
+              "text": "Sabha, back on.",
+              "speaker": "SPEAKER_00",
+              "speakerId": 0,
+              "is_user": true,
+              "start": 5.0,
+              "end": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    "outcome": {
+      "session_id": "sim-outcome",
+      "events": [
+        {
+          "delay": 0.3,
+          "realtime": [
+            {
+              "text": "Sabha, the startup decision went well.",
+              "speaker": "SPEAKER_00",
+              "speakerId": 0,
+              "is_user": true,
+              "start": 0.0,
+              "end": 2.5
+            }
+          ]
+        }
+      ]
+    },
+    "track": {
+      "session_id": "sim-track",
+      "events": [
+        {
+          "delay": 0.3,
+          "realtime": [
+            {
+              "text": "Sabha, show my track record.",
+              "speaker": "SPEAKER_00",
+              "speakerId": 0,
+              "is_user": true,
+              "start": 0.0,
+              "end": 2.0
+            }
+          ]
+        }
+      ]
+    },
+    "full": [
+      "memories",
+      "question"
+    ],
+    "daysummary": {
+      "session_id": "sim-day",
+      "events": [
+        {
+          "delay": 0.3,
+          "day_summary": {
+            "uid": "demo-user",
+            "created_at": "2026-09-27T22:00:00+00:00",
+            "summary": "{'id': 'sim-day-1', 'date': '2026-09-27', 'headline': 'Offer deadlines are closing in and the loan is on your mind', 'overview': 'You compared the startup and MNC offers and talked about family.', 'day_emoji': '🧭', 'stats': {'total_conversations': 3, 'total_duration_minutes': 42, 'action_items_count': 1}, 'highlights': [{'topic': 'Startup call', 'emoji': '🔋', 'summary': 'Meera offered ownership of the battery dashboard from day one.', 'conversation_ids': ['sim-conv-1']}], 'action_items': [], 'unresolved_questions': [{'question': 'Can the startup raise the fixed pay to 11 LPA?', 'conversation_id': 'sim-conv-1'}], 'decisions_made': [{'decision': 'Skip the MNC pre-joining webinar this week', 'conversation_id': 'sim-conv-1'}], 'knowledge_nuggets': [], 'locations': []}",
+            "summary_json": {
+              "id": "sim-day-1",
+              "date": "2026-09-27",
+              "headline": "Offer deadlines are closing in and the loan is on your mind",
+              "overview": "You compared the startup and MNC offers and talked about family.",
+              "day_emoji": "🧭",
+              "stats": {
+                "total_conversations": 3,
+                "total_duration_minutes": 42,
+                "action_items_count": 1
+              },
+              "highlights": [
+                {
+                  "topic": "Startup call",
+                  "emoji": "🔋",
+                  "summary": "Meera offered ownership of the battery dashboard from day one.",
+                  "conversation_ids": [
+                    "sim-conv-1"
+                  ]
+                }
+              ],
+              "action_items": [],
+              "unresolved_questions": [
+                {
+                  "question": "Can the startup raise the fixed pay to 11 LPA?",
+                  "conversation_id": "sim-conv-1"
+                }
+              ],
+              "decisions_made": [
+                {
+                  "decision": "Skip the MNC pre-joining webinar this week",
+                  "conversation_id": "sim-conv-1"
+                }
+              ],
+              "knowledge_nuggets": [],
+              "locations": []
+            }
+          }
+        }
+      ]
+    }
+  }
+}

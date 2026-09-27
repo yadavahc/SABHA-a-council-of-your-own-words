@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SABHA · A Council of Your Own Words</title>
+<meta name="description" content="Talk to Omi. Qdrant remembers. Five Lyzr advisors debate your decisions in your own words, then send the verdict back to your phone.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2240%22 fill=%22%23E8B64C%22/%3E%3C/svg%3E">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<style>
+:root{--bg:#0b0806;--panel:#15100b;--line:#2b2016;--line2:#3e2f1e;--gold:#e8b64c;--gold2:#f6d58a;--ink:#f4ead6;--muted:#a39275;--dim:#6f624d}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.display{font-family:Cinzel,serif}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;gap:28px;padding:16px 32px;transition:background .3s,border-color .3s;border-bottom:1px solid transparent}
+nav.solid{background:#0b0806e6;backdrop-filter:blur(10px);border-color:var(--line)}
+nav .logo{font-family:Cinzel,serif;font-weight:700;font-size:21px;letter-spacing:.16em;color:var(--gold2)}
+nav .links{display:flex;gap:26px;font-size:14px;color:var(--muted)}
+nav .links a:hover{color:var(--gold2)}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:13px 24px;border-radius:999px;font-weight:600;font-size:15px;transition:.2s}
+.btn.primary{background:linear-gradient(180deg,#f6d58a,#e8b64c);color:#1a1006;box-shadow:0 0 30px #e8b64c55}
+.btn.primary:hover{box-shadow:0 0 50px #e8b64c99;transform:translateY(-1px)}
+.btn.ghost{border:1px solid var(--line2);color:var(--ink)}
+.btn.ghost:hover{border-color:var(--gold);color:var(--gold2)}
+.btn.sm{padding:9px 18px;font-size:13.5px}
+#hero{position:relative;height:100vh;min-height:620px;overflow:hidden}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+.scrim{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:min(1100px,100%);height:62%;background:radial-gradient(ellipse 50% 60% at 50% 70%,#0b0806ee 0%,#0b0806aa 45%,transparent 75%);pointer-events:none;z-index:2}
+#hero::after{content:"";position:absolute;inset:auto 0 0 0;height:30%;background:linear-gradient(transparent,var(--bg));pointer-events:none}
+.hero-copy{position:absolute;left:0;right:0;bottom:7vh;text-align:center;z-index:5;padding:0 20px;pointer-events:none}
+.hero-copy > *{pointer-events:auto}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);padding:6px 14px;border:1px solid #e8b64c44;border-radius:999px;background:#0b080699}
+h1{font-family:Cinzel,serif;font-weight:700;font-size:clamp(52px,8.5vw,116px);letter-spacing:.14em;line-height:1;margin:18px 0 0;
+  background:linear-gradient(180deg,#fff3d1,#e8b64c 60%,#a06d1d);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 40px #e8b64c44)}
+.tag{font-size:clamp(17px,2vw,22px);color:var(--ink);max-width:680px;margin:14px auto 0}
+.sub{font-size:15px;color:var(--muted);max-width:620px;margin:8px auto 0}
+.ctas{display:flex;gap:12px;justify-content:center;margin-top:28px;flex-wrap:wrap}
+.live{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:22px;font-size:12.5px;color:var(--muted)}
+.live span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--dim)}.dot.ok{background:#4ade80;box-shadow:0 0 8px #4ade80}
+section{position:relative;padding:110px 24px;max-width:1180px;margin:0 auto}
+.kicker{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);text-align:center}
+h2{font-family:Cinzel,serif;font-weight:600;font-size:clamp(30px,4vw,46px);text-align:center;margin:10px 0 14px;line-height:1.15}
+.lead{text-align:center;color:var(--muted);max-width:680px;margin:0 auto 56px}
+.card{background:linear-gradient(180deg,#18110b,#110c08);border:1px solid var(--line);border-radius:20px;padding:26px}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;position:relative}
+.flow::before{content:"";position:absolute;top:44px;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,#e8b64c66,transparent)}
+.step .n{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;border:1px solid #e8b64c66;background:#1a120a;color:var(--gold2);margin-bottom:18px;position:relative;z-index:1;box-shadow:0 0 24px #e8b64c22}
+.step h3{margin:0 0 6px;font-size:18px}.step p{margin:0;color:var(--muted);font-size:14.5px}
+.step .by{display:inline-block;margin-top:12px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.council{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.adv{text-align:center;padding:28px 18px}
+.adv .orb{width:64px;height:64px;border-radius:50%;margin:0 auto 16px;background:radial-gradient(circle at 34% 28%,#fff 0%,var(--c) 28%,color-mix(in srgb,var(--c) 50%,#000) 72%,#000);box-shadow:0 0 26px var(--c),0 0 70px color-mix(in srgb,var(--c) 35%,transparent)}
+.adv h3{font-family:Cinzel,serif;font-size:16px;letter-spacing:.1em;margin:0 0 6px}
+.adv p{font-size:13.5px;color:var(--muted);margin:0}
+.support{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+.support .card{display:flex;gap:14px;align-items:flex-start;padding:20px}
+.support b{display:block;margin-bottom:2px}.support span{font-size:13.5px;color:var(--muted)}
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.feat .card h3{margin:14px 0 6px;font-size:17px}.feat .card p{margin:0;color:var(--muted);font-size:14px}
+.feat .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:#261a0c;color:var(--gold2);border:1px solid #5a4020}
+.new{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#1a1006;background:var(--gold);border-radius:999px;padding:2px 8px;margin-left:8px;vertical-align:middle}
+.quote{max-width:820px;margin:0 auto;text-align:center}
+.quote blockquote{font-family:Cinzel,serif;font-size:clamp(20px,2.4vw,28px);line-height:1.45;margin:0;color:var(--ink)}
+.quote .who{margin-top:16px;color:var(--muted);font-size:14px}
+.priv{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.priv .card{display:flex;gap:14px}
+.priv b{display:block}.priv span{color:var(--muted);font-size:14px}
+.cta{text-align:center;padding:90px 24px 120px}
+footer{border-top:1px solid var(--line);padding:28px 32px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;color:var(--dim);font-size:13px}
+.reveal{opacity:0;transform:translateY(24px)}
+@media (max-width:900px){.flow,.council,.feat,.support,.priv{grid-template-columns:1fr 1fr}.flow::before{display:none}nav .links{display:none}}
+@media (max-width:560px){.flow,.council,.feat,.support,.priv{grid-template-columns:1fr}nav{padding:14px 18px}}
+</style>
+</head>
+<body>
+<nav id="nav">
+  <a href="/" class="logo">SABHA</a>
+  <div class="links"><a href="#how">How it works</a><a href="#council">The council</a><a href="#features">Features</a><a href="#privacy">Privacy</a></div>
+  <div style="flex:1"></div>
+  <a class="btn primary sm" href="/council">Open the council →</a>
+</nav>
+
+<header id="hero">
+  <canvas id="gl"></canvas>
+  <div class="scrim"></div>
+  <div class="hero-copy">
+    <div class="eyebrow">Lyzr × Qdrant × Omi · Multi-agent</div>
+    <h1>SABHA</h1>
+    <p class="tag">A council of AI advisors that debates your life decisions, <b style="color:var(--gold2)">in your own words</b>.</p>
+    <p class="sub">Talk to Omi for weeks. Qdrant remembers. When a big decision comes, five Lyzr agents argue it out using your own past words, vote, and send the verdict back to your phone.</p>
+    <div class="ctas"><a class="btn primary" href="/council">Enter the council →</a><a class="btn ghost" href="#how">How it works</a></div>
+    <div class="live" id="live"><span><i class="dot"></i>connecting…</span></div>
+  </div>
+</header>
+
+<section id="how">
+  <div class="kicker reveal">How it works</div>
+  <h2 class="reveal">From a passing thought to a verdict</h2>
+  <p class="lead reveal">No forms, no journaling. You just talk. Sabha turns weeks of your own words into a council that knows what you actually care about.</p>
+  <div class="flow">
+    <div class="step reveal"><div class="n"><svg class="i" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></svg></div>
+      <h3>1 · You talk</h3><p>Speak your goals, fears and plans into the Omi app. Live transcripts stream to Sabha over webhooks.</p><span class="by">Omi</span></div>
+    <div class="step reveal"><div class="n"><svg class="i" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg></div>
+      <h3>2 · It remembers</h3><p>Each sentence is redacted, labelled as a goal, value, fear, plan, fact or past decision, embedded, and stored as a memory.</p><span class="by">Qdrant</span></div>
+    <div class="step reveal"><div class="n"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="4" cy="6" r="2"/><circle cx="20" cy="6" r="2"/><circle cx="4" cy="18" r="2"/><circle cx="20" cy="18" r="2"/><path d="m6 7 4 3M18 7l-4 3M6 17l4-3M18 17l-4-3"/></svg></div>
+      <h3>3 · The council debates</h3><p>“Sabha, should I…?” Five advisors cite your dated memories, answer each other, and get audited for bias.</p><span class="by">Lyzr agents</span></div>
+    <div class="step reveal"><div class="n"><svg class="i" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+      <h3>4 · Verdict & learning</h3><p>A weighted vote becomes a verdict and an action item in your Omi app. Tell it how things went, and the right advisors gain power.</p><span class="by">Omi + Qdrant</span></div>
+  </div>
+</section>
+
+<section id="council">
+  <div class="kicker reveal">The council</div>
+  <h2 class="reveal">Five voices. One of them is you.</h2>
+  <p class="lead reveal">Each advisor is its own Lyzr agent with its own persona and its own slice of your memories. Every claim must cite one of your memories, or be marked a guess.</p>
+  <div class="council">
+    <div class="card adv reveal" style="--c:#F5A524"><div class="orb"></div><h3>Mentor</h3><p>Long-term growth, and who you'll learn from.</p></div>
+    <div class="card adv reveal" style="--c:#EF4444"><div class="orb"></div><h3>Skeptic</h3><p>Argues against the option you're leaning toward.</p></div>
+    <div class="card adv reveal" style="--c:#A78BFA"><div class="orb"></div><h3>Future-You</h3><p>You in five years, using only goals you actually said.</p></div>
+    <div class="card adv reveal" style="--c:#2DD4BF"><div class="orb"></div><h3>Strategist</h3><p>Money, risk, and whether you can undo it.</p></div>
+    <div class="card adv reveal" style="--c:#60A5FA"><div class="orb"></div><h3>Guardian</h3><p>Checks every option against your stated values.</p></div>
+  </div>
+  <div class="support">
+    <div class="card reveal"><div style="color:#FDE68A"><svg class="i" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div><div><b>Moderator</b><span>Frames the options and guesses your current lean.</span></div></div>
+    <div class="card reveal"><div style="color:#FB923C"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div><div><b>Bias Radar</b><span>Flags sunk cost, social proof, and “says money doesn't matter, worries about loans”.</span></div></div>
+    <div class="card reveal"><div style="color:#E7D3A8"><svg class="i" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></svg></div><div><b>Scribe</b><span>Writes the verdict, the dissent and one concrete next step.</span></div></div>
+  </div>
+</section>
+
+<section>
+  <div class="quote reveal">
+    <blockquote>“On Sep 27 you said you care about staying close to your parents in Bengaluru. That changes my vote: Startup.”</blockquote>
+    <div class="who">The Strategist, round 2, after the user interrupted the debate by voice</div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="kicker reveal">Features</div>
+  <h2 class="reveal">Built for real decisions</h2>
+  <p class="lead reveal">Everything runs on your own words, and the council gets wiser every time you report back.</p>
+  <div class="feat">
+    <div class="card reveal"><div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="m12 3-1.9 5.8L4 9.5l4.8 3.9L7.2 19 12 15.8l4.8 3.2-1.6-5.6L20 9.5l-6.1-.7z"/></svg></div>
+      <h3>Memory Constellation <span class="new">new</span></h3><p>Your Qdrant memory vectors in 3D. Memories the advisors cite light up as they speak.</p></div>
+    <div class="card reveal"><div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v18"/><path d="m19 8 3 8a5 5 0 0 1-6 0zM5 8l3 8a5 5 0 0 1-6 0z"/><path d="M3 7h1a17 17 0 0 0 8-2 17 17 0 0 0 8 2h1"/></svg></div>
+      <h3>Tipping Point <span class="new">new</span></h3><p>Every verdict shows what would have flipped it: which advisor switching sides, or how much more weight a dissenter needed.</p></div>
+    <div class="card reveal"><div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></div>
+      <h3>Omi Day Summary <span class="new">new</span></h3><p>Omi's nightly recap flows in automatically. Decisions become past decisions, and open questions become plans.</p></div>
+    <div class="card reveal"><div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></div>
+      <h3>Outcome learning</h3><p>“Sabha, the startup decision went well.” Advisors who called it gain vote weight, and you can see the weights change.</p></div>
+    <div class="card reveal"><div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg></div>
+      <h3>Interrupt by voice</h3><p>“Sabha, I also care about…” mid-debate. It's saved as a value, and round two must weigh it.</p></div>
+    <div class="card reveal"><div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/><circle cx="12" cy="12" r="10"/></svg></div>
+      <h3>Verdict back to Omi</h3><p>The verdict becomes an Omi memory, and the next step lands in your Omi action items.</p></div>
+  </div>
+</section>
+
+<section id="privacy">
+  <div class="kicker reveal">Privacy</div>
+  <h2 class="reveal">Your words, your rules</h2>
+  <p class="lead reveal">A decision engine is only useful if you can be honest with it.</p>
+  <div class="priv">
+    <div class="card reveal"><div style="color:var(--gold2)"><svg class="i" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div><b>Sealed memories</b><span>“Sabha, seal that.” Advisors may reason with a sealed memory but can never quote it, and a server-side check enforces that.</span></div></div>
+    <div class="card reveal"><div style="color:var(--gold2)"><svg class="i" viewBox="0 0 24 24"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.53 13.53 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><path d="m2 2 20 20"/></svg></div><div><b>Off the record</b><span>Nothing is stored until you say “back on”.</span></div></div>
+    <div class="card reveal"><div style="color:var(--gold2)"><svg class="i" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></div><div><b>Redacted at the door</b><span>Phone numbers and emails become [REDACTED] before anything is embedded or stored.</span></div></div>
+    <div class="card reveal"><div style="color:var(--gold2)"><svg class="i" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><div><b>Local embeddings</b><span>Vectors are computed on your machine. Only the memories relevant to a question are sent to the council.</span></div></div>
+  </div>
+</section>
+
+<div class="cta">
+  <h2 class="reveal">The council is in session</h2>
+  <p class="lead reveal" style="margin-bottom:28px">Bring it a real decision.</p>
+  <a class="btn primary reveal" href="/council">Enter the council →</a>
+</div>
+
+<footer><span>SABHA · Dawn of the Autonomous AI Builder · Track 2: Collaborative Multi-Agent Workflows</span><span>Built with Lyzr · Qdrant · Omi · Three.js</span></footer>
+
+<script>
+// nav + reveals
+addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('solid',scrollY>40));
+gsap.registerPlugin(ScrollTrigger);
+gsap.utils.toArray('.reveal').forEach((el,i)=>gsap.to(el,{opacity:1,y:0,duration:.8,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 88%'}}));
+gsap.from('.hero-copy > *',{opacity:0,y:24,duration:1,stagger:.12,delay:.3,ease:'power3.out'});
+// live stats
+fetch('/api/state').then(r=>r.json()).then(s=>{
+  const q=/cloud\.qdrant/.test(s.qdrant)?'Qdrant Cloud':'Qdrant';
+  document.getElementById('live').innerHTML=
+   `<span><i class="dot ok"></i>${s.memories.length} memories in ${q}</span>`+
+   `<span><i class="dot ${s.lyzr_online?'ok':''}"></i>Lyzr ${s.lyzr_online?'8 agents online':'offline mode'}</span>`+
+   `<span><i class="dot ${s.omi.state==='live'?'ok':''}"></i>Omi Link ${s.omi.state}</span>`+
+   `<span><i class="dot ok"></i>${s.decisions.length} decisions made</span>`;
+}).catch(()=>{document.getElementById('live').innerHTML='';});
+</script>
+<script type="module">
+import * as THREE from 'three';
+import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
+import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
+import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+const canvas=document.getElementById('gl');
+let renderer;
+try{renderer=new THREE.WebGLRenderer({canvas,antialias:true});}catch(e){canvas.style.background='radial-gradient(circle at 50% 45%,#3a2410,#0b0806 70%)';throw e;}
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.1;
+const scene=new THREE.Scene();scene.background=new THREE.Color('#0b0806');scene.fog=new THREE.FogExp2('#0b0806',.055);
+const cam=new THREE.PerspectiveCamera(40,1,.1,100);cam.position.set(0,3.6,8.6);
+
+scene.add(new THREE.AmbientLight('#ffe7b8',.25));
+const key=new THREE.PointLight('#e8b64c',18,14,2);key.position.set(0,3.2,0);scene.add(key);
+
+// table
+const table=new THREE.Group();scene.add(table);
+const top=new THREE.Mesh(new THREE.CylinderGeometry(2.5,2.6,.16,128),new THREE.MeshStandardMaterial({color:'#2a1a0c',metalness:.35,roughness:.55}));
+table.add(top);
+const rim=new THREE.Mesh(new THREE.TorusGeometry(2.53,.035,16,200),new THREE.MeshStandardMaterial({color:'#e8b64c',emissive:'#e8b64c',emissiveIntensity:1.1,metalness:1,roughness:.3}));
+rim.rotation.x=Math.PI/2;rim.position.y=.08;table.add(rim);
+const inner=new THREE.Mesh(new THREE.TorusGeometry(1.5,.008,8,200),new THREE.MeshBasicMaterial({color:'#e8b64c',transparent:true,opacity:.35}));
+inner.rotation.x=Math.PI/2;inner.position.y=.09;table.add(inner);
+// centre sigil
+const sigil=new THREE.Mesh(new THREE.IcosahedronGeometry(.34,1),new THREE.MeshBasicMaterial({color:'#f6d58a',wireframe:true,transparent:true,opacity:.75}));
+sigil.position.y=.75;scene.add(sigil);
+const core=new THREE.Mesh(new THREE.SphereGeometry(.09,24,24),new THREE.MeshBasicMaterial({color:'#fff1c9'}));core.position.y=.75;scene.add(core);
+
+// advisors
+const COLORS=['#F5A524','#EF4444','#A78BFA','#2DD4BF','#60A5FA'];
+const orbs=COLORS.map((c,i)=>{
+  const g=new THREE.Group();const a=-Math.PI/2+i*2*Math.PI/5;
+  const m=new THREE.Mesh(new THREE.SphereGeometry(.3,48,48),new THREE.MeshStandardMaterial({color:c,emissive:c,emissiveIntensity:.9,roughness:.25,metalness:.1}));
+  g.add(m);const l=new THREE.PointLight(c,3,3.5,2);g.add(l);
+  g.position.set(Math.cos(a)*2.55,.62,Math.sin(a)*2.55);g.userData={a,m,base:.62,phase:i*1.3};scene.add(g);
+  const geo=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,.75,0),g.position.clone()]);
+  const line=new THREE.Line(geo,new THREE.LineBasicMaterial({color:c,transparent:true,opacity:0}));scene.add(line);g.userData.line=line;
+  return g;});
+// reply arcs between advisors
+const arcs=[];function arc(i,j){const A=orbs[i].position,B=orbs[j].position;const mid=A.clone().add(B).multiplyScalar(.5).multiplyScalar(.35);mid.y=1.6;
+  const curve=new THREE.QuadraticBezierCurve3(A.clone(),mid,B.clone());const geo=new THREE.TubeGeometry(curve,48,.012,6,false);
+  const mesh=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:COLORS[i],transparent:true,opacity:0}));scene.add(mesh);arcs.push({mesh,t:0});}
+
+// dust
+const N=1400,pos=new Float32Array(N*3);for(let i=0;i<N;i++){const r=3+Math.random()*9,t=Math.random()*Math.PI*2,y=(Math.random()-.3)*7;pos.set([Math.cos(t)*r,y,Math.sin(t)*r],i*3);}
+const dg=new THREE.BufferGeometry();dg.setAttribute('position',new THREE.BufferAttribute(pos,3));
+const dc=document.createElement('canvas');dc.width=dc.height=32;{const g=dc.getContext('2d'),r=g.createRadialGradient(16,16,0,16,16,16);r.addColorStop(0,'#fff');r.addColorStop(.4,'rgba(255,255,255,.5)');r.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=r;g.fillRect(0,0,32,32);}
+const dust=new THREE.Points(dg,new THREE.PointsMaterial({map:new THREE.CanvasTexture(dc),color:'#f6d58a',size:.06,transparent:true,opacity:.7,blending:THREE.AdditiveBlending,depthWrite:false}));scene.add(dust);
+
+// post
+const composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,cam));
+const bloom=new UnrealBloomPass(new THREE.Vector2(1,1),.75,.5,.22);composer.addPass(bloom);
+
+function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;renderer.setSize(w,h,false);composer.setSize(w,h);cam.aspect=w/h;
+  cam.position.z=w<700?12.5:9.6;cam.updateProjectionMatrix();}
+addEventListener('resize',resize);resize();
+
+const mouse={x:0,y:0};addEventListener('pointermove',e=>{mouse.x=e.clientX/innerWidth-.5;mouse.y=e.clientY/innerHeight-.5;});
+let speaker=0,lastSwitch=0;const clock=new THREE.Clock();
+function frame(){
+  const t=clock.getElapsedTime();
+  if(t-lastSwitch>2.2){lastSwitch=t;const prev=speaker;speaker=(speaker+1+Math.floor(Math.random()*3))%5;if(Math.random()<.6)arc(prev,speaker);}
+  orbs.forEach((g,i)=>{const u=g.userData,on=i===speaker;
+    g.position.y=u.base+Math.sin(t*1.4+u.phase)*.06;
+    const s=THREE.MathUtils.lerp(g.scale.x,on?1.35:.92,.08);g.scale.setScalar(s);
+    u.m.material.emissiveIntensity=THREE.MathUtils.lerp(u.m.material.emissiveIntensity,on?2.1+Math.sin(t*14)*.4:.6,.12);
+    u.line.material.opacity=THREE.MathUtils.lerp(u.line.material.opacity,on?.55:0,.08);
+    const p=u.line.geometry.attributes.position;p.setXYZ(1,g.position.x,g.position.y,g.position.z);p.needsUpdate=true;});
+  for(let k=arcs.length-1;k>=0;k--){const a=arcs[k];a.t+=.012;a.mesh.material.opacity=Math.sin(Math.min(a.t,1)*Math.PI)*.8;if(a.t>1){scene.remove(a.mesh);a.mesh.geometry.dispose();arcs.splice(k,1);}}
+  sigil.rotation.y=t*.4;sigil.rotation.x=t*.25;core.scale.setScalar(1+Math.sin(t*3)*.15);
+  table.rotation.y=t*.03;dust.rotation.y=t*.015;
+  cam.position.x+=(mouse.x*1.6-cam.position.x)*.04;cam.position.y+=((3.6-mouse.y*1.2)-cam.position.y)*.04;cam.lookAt(0,-1.25,0);
+  composer.render();requestAnimationFrame(frame);}
+frame();
+</script>
+</body>
+</html>

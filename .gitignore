@@ -1,0 +1,7 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+data/qdrant_local/
+data/models/
+data/lyzr_agents.json
