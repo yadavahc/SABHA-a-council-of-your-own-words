@@ -36,6 +36,7 @@ and send the verdict back to your phone.**
 - [Setup in 5 commands](#setup-in-5-commands)
 - [Connecting the Omi app](#connecting-the-omi-app)
 - [Running without Omi hardware](#running-without-omi-hardware)
+- [Deploy](#deploy)
 - [Voice commands](#voice-commands)
 - [Configuration](#configuration)
 - [API reference](#api-reference)
@@ -353,6 +354,23 @@ SABHA needs **no Omi device**. The Omi mobile app streams your phone's mic. Ther
 
 ---
 
+## Deploy
+
+SABHA ships with a `Dockerfile` (port 7860, embedding model baked in, tunnel disabled) and runs on any host with Docker
+and WebSockets. **Hugging Face Spaces** (free, 16 GB RAM) is the recommended option. Railway, Render and a plain VM
+also work.
+
+Quick version:
+1. Use **Qdrant Cloud** (`QDRANT_URL`, `QDRANT_API_KEY`), because container disks are temporary.
+2. Set the keys (`LYZR_API_KEY`, `OMI_API_KEY`) as secrets, and copy your `data/lyzr_agents.json` ids into the
+   `LYZR_AGENT_*` variables so restarts don't create new agents.
+3. Set `PUBLIC_URL` to the deployed https URL, deploy, then paste `<url>/omi/realtime` and `<url>/omi/memory-created`
+   into the Omi app. Unlike the local tunnel, these URLs never change.
+
+Step-by-step guides for each host are in **[DEPLOY.md](DEPLOY.md)**.
+
+---
+
 ## Voice commands
 
 | Say | Effect |
@@ -437,6 +455,8 @@ data/
 scripts/seed.py            reset + seed Qdrant
 docs/screenshots/          README images
 DEMO_SCRIPT.md             5-minute demo video script
+DEPLOY.md                  deployment guide (HF Spaces, Railway, Render, VM)
+Dockerfile                 production container
 ```
 
 ---
