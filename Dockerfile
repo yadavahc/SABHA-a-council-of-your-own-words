@@ -1,3 +1,12 @@
+# ---- 1. build the Next.js frontend into a static export (web/out)
+FROM node:22-alpine AS web
+WORKDIR /web
+COPY web/package.json web/package-lock.json ./
+RUN npm ci
+COPY web/ .
+RUN npm run build
+
+# ---- 2. Python server (serves the API, Omi webhooks, WebSocket and the exported frontend)
 FROM python:3.12-slim
 
 ENV PYTHONUNBUFFERED=1 \
@@ -13,6 +22,7 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 COPY --chown=user . .
+COPY --from=web --chown=user /web/out ./web/out
 USER user
 
 # Bake the embedding model into the image so cold starts don't download it

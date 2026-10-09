@@ -8,7 +8,7 @@ from contextlib import asynccontextmanager
 
 import httpx
 from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from . import config
@@ -80,7 +80,6 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="SABHA", lifespan=lifespan)
-app.mount("/static", StaticFiles(directory=config.STATIC), name="static")
 
 
 def check_key(request: Request) -> None:
@@ -101,14 +100,27 @@ def spawn(coro) -> None:
 
 
 # ------------------------------------------------------------------ pages / ws
+NOT_BUILT = """<!doctype html><meta charset="utf-8"><title>SABHA</title>
+<body style="background:#0b0806;color:#f4ead6;font:15px/1.6 system-ui;padding:40px">
+<h2 style="color:#f6d58a">The SABHA frontend isn't built yet</h2>
+<p>Build it once: <code>cd web &amp;&amp; npm install &amp;&amp; npm run build</code>, then restart the server.</p>
+<p>Or develop with hot reload: <code>cd web &amp;&amp; npm run dev</code> and open <a style="color:#e8b64c"
+href="http://localhost:3000">http://localhost:3000</a> (it talks to this server for the API).</p></body>"""
+
+
+def page(name: str):
+    f = config.WEB_DIST / name
+    return FileResponse(f) if f.exists() else HTMLResponse(NOT_BUILT, status_code=503)
+
+
 @app.get("/")
 async def landing():
-    return FileResponse(config.STATIC / "landing.html")
+    return page("index.html")
 
 
 @app.get("/council")
 async def council_page():
-    return FileResponse(config.STATIC / "council.html")
+    return page("council.html")
 
 
 @app.get("/health")
@@ -298,3 +310,9 @@ async def simulate(scenario: str = "full"):
         raise HTTPException(404, f"scenarios: {list(data['scenarios'])}")
     spawn(replay(scenario))
     return {"status": "replaying", "scenario": scenario}
+
+
+# ------------------------------------------------------------------ Next.js export (JS chunks, fonts, RSC payloads)
+# Mounted last so every API route above takes precedence.
+if config.WEB_DIST.exists():
+    app.mount("/", StaticFiles(directory=config.WEB_DIST, html=True), name="web")

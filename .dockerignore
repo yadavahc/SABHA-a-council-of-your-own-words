@@ -7,3 +7,6 @@ data/qdrant_local/
 data/models/
 data/lyzr_agents.json
 docs/
+web/node_modules/
+web/.next/
+web/out/

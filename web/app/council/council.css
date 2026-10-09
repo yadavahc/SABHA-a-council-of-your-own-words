@@ -1,0 +1,305 @@
+/* Council app. Everything is scoped under .council so it can't leak into the landing page on client navigation.
+   Simple layout lives in Tailwind classes on the components; the bespoke visuals (table, orbs, scroll) live here. */
+
+@layer components {
+
+.council {
+  position: relative;
+  height: 100dvh;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.council::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 45% 55% at 50% 55%, #e8b64c24 0%, #e8b64c0c 40%, transparent 72%),
+    radial-gradient(ellipse 80% 60% at 50% 120%, #7a3b0b38, transparent 60%);
+}
+.council.offrec::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 160px #ef444455;
+  z-index: 70;
+}
+
+/* ---------- shell ---------- */
+.council .shell {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr) 360px;
+  grid-template-rows: 58px minmax(0, 1fr);
+}
+.council .pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 30px;
+  padding: 0 11px;
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  background: var(--color-panel);
+  font-size: 12px;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+.council .pill b { color: var(--color-ink); font-weight: 600; }
+.council .hbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--color-line);
+  border-radius: 10px;
+  background: var(--color-panel);
+  font-size: 12.5px;
+  white-space: nowrap;
+  transition: 0.15s;
+}
+.council .hbtn:hover { border-color: var(--color-gold); color: var(--color-gold2); }
+.council .hbtn.icon { width: 34px; padding: 0; justify-content: center; }
+.council .hbtn.on { border-color: var(--color-gold); color: var(--color-gold2); background: #261a0c; }
+
+/* ---------- phone (left) ---------- */
+.council .left { padding: 14px 0 14px 14px; }
+.council .right { padding: 14px 14px 14px 0; }
+.council .phone {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-radius: 36px;
+  padding: 10px 12px 12px;
+  background: #070504;
+  border: 1px solid #3a2c1c;
+  box-shadow: inset 0 0 0 5px #140e09, 0 24px 60px #000b, 0 0 40px #e8b64c14;
+}
+.council .notch { width: 86px; height: 18px; border-radius: 0 0 12px 12px; background: #140e09; margin: -10px auto 6px; }
+.council .msg {
+  align-self: flex-end;
+  max-width: 90%;
+  background: #221910;
+  border: 1px solid #33271a;
+  padding: 7px 10px;
+  border-radius: 14px 14px 4px 14px;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+.council .msg.cmd { background: linear-gradient(180deg, #3a290e, #2a1e0c); border-color: #8a6429; color: var(--color-gold2); }
+
+/* ---------- table (center) ---------- */
+.council .question {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(16px, 1.55vw, 23px);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.council .bias { font-size: 11px; padding: 2px 9px; border-radius: 999px; background: #fb923c1f; border: 1px solid #fb923c77; color: #fed7aa; }
+.council .table {
+  position: absolute;
+  border-radius: 50%;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 42%, #2a1b0e 0%, #1b1109 52%, #0f0905 74%);
+  box-shadow: 0 0 0 2px #6b4a1f, 0 0 0 8px #160f08, 0 0 0 10px #8a642999, 0 0 60px #e8b64c40, inset 0 0 80px #000c,
+    inset 0 0 18px #e8b64c2a;
+}
+.council .table::after { content: ""; position: absolute; inset: 13%; border-radius: 50%; border: 1px dashed #e8b64c1f; }
+.council .table .scan {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #fb923c55, transparent 60deg);
+  opacity: 0;
+  animation: c-spin 2.2s linear infinite;
+  transition: opacity 0.6s;
+}
+.council .table.scanning .scan { opacity: 1; }
+
+.council .seat {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.35s, filter 0.35s;
+  z-index: 6;
+}
+.council .seat .orbbox { height: var(--orb); display: flex; align-items: center; }
+.council .seat.dim { opacity: 0.3; filter: saturate(0.4); }
+.council .orb {
+  width: var(--orb);
+  height: var(--orb);
+  border-radius: 50%;
+  position: relative;
+  background: radial-gradient(circle at 34% 28%, #ffffffd0 0%, var(--c) 26%, color-mix(in srgb, var(--c) 55%, #000) 70%, #000 100%);
+  box-shadow: 0 0 22px var(--c), 0 0 60px color-mix(in srgb, var(--c) 40%, transparent);
+}
+.council .orb .halo { position: absolute; inset: -12px; border-radius: 50%; border: 2px solid var(--c); opacity: 0; }
+.council .seat.speaking .orb {
+  box-shadow: 0 0 36px var(--c), 0 0 110px var(--c), 0 0 180px color-mix(in srgb, var(--c) 45%, transparent);
+}
+.council .seat .nm {
+  margin-top: 8px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-shadow: 0 1px 8px #000;
+  white-space: nowrap;
+}
+.council .stance { padding: 0 7px; border-radius: 999px; font-size: 10px; font-weight: 700; color: #120b05; line-height: 16px; }
+.council .seat.you { --c: #e5e7eb; }
+.council .seat.you .orb { width: calc(var(--orb) * 0.6); height: calc(var(--orb) * 0.6); }
+.council .seat.you .orbbox { height: calc(var(--orb) * 0.6); }
+.council .seat.you .nm { font-size: 10px; color: var(--color-muted); }
+.council.entered .seat { animation: seatIn 0.9s cubic-bezier(0.34, 1.8, 0.64, 1) backwards; /* not "both": a held opacity would override .dim */ }
+@keyframes seatIn {
+  from { scale: 0; opacity: 0; }
+  to { scale: 1; opacity: 1; }
+}
+
+.council kbd { font-family: inherit; color: var(--color-gold2); background: #2a1d0e; border: 1px solid #5a4020; border-radius: 6px; padding: 1px 6px; }
+.council .bubble {
+  text-align: left;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: #120c07f2;
+  border: 1px solid var(--c, #e8b64c);
+  box-shadow: 0 12px 40px #000c, 0 0 30px color-mix(in srgb, var(--c, #e8b64c) 28%, transparent);
+  overflow: hidden;
+}
+.council .bubble .text::after { content: "▍"; color: var(--c); animation: c-blink 1s infinite; }
+.council .bubble.done .text::after { content: ""; }
+
+.council .memcard {
+  position: absolute;
+  width: 190px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #f6e7c8;
+  color: #2a1a0a;
+  font-size: 11.5px;
+  line-height: 1.35;
+  box-shadow: 0 8px 24px #000b, 0 0 16px #e8b64c55;
+  z-index: 12;
+  pointer-events: none;
+}
+.council .memcard b { display: block; font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #8a5a14; margin-bottom: 2px; }
+.council .memcard.sealed { background: #241b11; color: #e8d5b0; border: 1px dashed #e8b64c; }
+
+/* ---------- dock ---------- */
+.council .round {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--color-line2);
+  background: var(--color-panel);
+  color: var(--color-gold2);
+  flex: none;
+  transition: 0.15s;
+}
+.council .round:hover,
+.council .round.on { border-color: var(--color-gold); }
+.council .round.rec { background: #3a0f0f; border-color: #ef4444; color: #fecaca; animation: recp 1.4s infinite; }
+@keyframes recp {
+  0% { box-shadow: 0 0 0 0 #ef444477; }
+  100% { box-shadow: 0 0 0 12px #ef444400; }
+}
+.council .chip {
+  font-size: 11.5px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--color-line);
+  color: var(--color-muted);
+  background: #120d09;
+  transition: 0.15s;
+  white-space: nowrap;
+}
+.council .chip:hover { color: var(--color-gold2); border-color: var(--color-gold); }
+.council .smallbtn { font-size: 11px; padding: 3px 9px; border-radius: 7px; border: 1px solid var(--color-line2); background: #120d09; }
+.council .smallbtn:hover { border-color: var(--color-gold); color: var(--color-gold2); }
+
+/* ---------- right panel ---------- */
+.council .mem { padding: 9px 11px; border: 1px solid #2a1f14; border-radius: 12px; margin-bottom: 7px; background: #18110b; font-size: 12.5px; line-height: 1.45; }
+.council .mem.sealed .body { font-style: italic; color: #cdbb98; }
+.council .wrow { padding: 11px 12px; border: 1px solid #2a1f14; border-radius: 12px; margin-bottom: 8px; background: #18110b; }
+.council .mode { font-size: 9px; padding: 1px 6px; border-radius: 5px; font-weight: 700; letter-spacing: 0.04em; }
+.council .m-lyzr { background: #22c55e2e; color: #86efac; }
+.council .m-offline { background: #f59e0b2e; color: #fcd34d; }
+.council .m-omi-api { background: #60a5fa2e; color: #93c5fd; }
+
+/* ---------- toasts ---------- */
+.council .toast { animation: toast-in 0.3s ease-out, toast-out 0.4s 4.8s forwards; }
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(-10px); }
+}
+@keyframes toast-out {
+  to { opacity: 0; }
+}
+
+/* ---------- verdict scroll ---------- */
+.council .roller {
+  height: 22px;
+  border-radius: 11px;
+  background: linear-gradient(#6b4a1f, #d9a950 45%, #6b4a1f);
+  box-shadow: 0 4px 12px #000c;
+  position: relative;
+  z-index: 2;
+}
+.council .roller::before,
+.council .roller::after { content: ""; position: absolute; top: -4px; width: 16px; height: 30px; border-radius: 6px; background: #4a3215; }
+.council .roller::before { left: -10px; }
+.council .roller::after { right: -10px; }
+.council .parch {
+  margin: -6px 12px;
+  padding: 24px 30px;
+  max-height: 72vh;
+  overflow: auto;
+  background: linear-gradient(90deg, #d8c08e, #f3e2b8 12%, #f7e9c6 50%, #f3e2b8 88%, #d8c08e);
+  color: #2a1a0a;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 1360px) {
+  .council .shell { grid-template-columns: 264px minmax(0, 1fr) 320px; }
+}
+@media (max-width: 1100px) {
+  .council .shell { grid-template-columns: minmax(0, 1fr); }
+  .council .left { display: none; }
+  .council .right {
+    position: fixed;
+    top: 58px;
+    right: 0;
+    bottom: 0;
+    width: min(380px, 100vw);
+    z-index: 45;
+    padding: 10px;
+    background: #0b0806f2;
+    transform: translateX(105%);
+    transition: transform 0.3s;
+  }
+  .council .right.open { transform: none; }
+}
+
+@keyframes c-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes c-blink {
+  50% { opacity: 0.25; }
+}
+}

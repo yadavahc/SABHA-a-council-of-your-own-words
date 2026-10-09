@@ -299,18 +299,23 @@ speech → dedupe (session, start, text) → debounce 1.6 s → split on wake wo
 
 ## Setup in 5 commands
 
-Requires Python 3.12+ and (optionally) `cloudflared` or `ngrok` for the public tunnel.
+Requires Python 3.12+, Node.js 20+ and (optionally) `cloudflared` or `ngrok` for the public tunnel.
 
 ```bash
 python -m venv .venv
 .venv\Scripts\activate            # macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
 copy .env.example .env            # macOS/Linux: cp .env.example .env   → then add your keys
+cd web && npm install && npm run build && cd ..   # build the Next.js frontend once
 python run.py
 ```
 
 - Landing page: <http://localhost:8765>
 - Council app: <http://localhost:8765/council> (click **Enter the Sabha** to enable voices)
+
+**Frontend development (hot reload):** keep `python run.py` running, then `cd web && npm run dev` and open
+<http://localhost:3000>. The dev server proxies `/api` to the Python server on :8765 and the WebSocket connects to it
+directly. `npm run typecheck` runs the TypeScript checker.
 
 On first start SABHA:
 - downloads the embedding model (~70 MB),
@@ -356,7 +361,7 @@ SABHA needs **no Omi device**. The Omi mobile app streams your phone's mic. Ther
 
 ## Deploy
 
-SABHA ships with a `Dockerfile` (port 7860, embedding model baked in, tunnel disabled) and runs on any host with Docker
+SABHA ships with a multi-stage `Dockerfile` (builds the Next.js frontend, then the Python server; port 7860, embedding model baked in, tunnel disabled) and runs on any host with Docker
 and WebSockets. **Hugging Face Spaces** (free, 16 GB RAM) is the recommended option. Railway, Render and a plain VM
 also work.
 
@@ -411,7 +416,7 @@ All settings live in `.env` (see `.env.example`). No keys are stored in code.
 
 | Method | Path | Description |
 |---|---|---|
-| GET | `/` | Landing page (Three.js) |
+| GET | `/` | Landing page (Next.js + Three.js) |
 | GET | `/council` | Council app |
 | WS | `/ws` | Live event stream (state, phone, advisor_say, vote, verdict, …) |
 | POST | `/omi/realtime` | Omi real-time transcript webhook |
@@ -435,7 +440,7 @@ All settings live in `.env` (see `.env.example`). No keys are stored in code.
 
 ```
 app/
-  main.py        FastAPI: pages, webhooks, WebSocket, REST, /simulate, /api/constellation
+  main.py        FastAPI: serves the Next.js export, webhooks, WebSocket, REST, /simulate, /api/constellation
   ingest.py      Omi segment dedupe + debounce, wake word, commands, memories, day summary
   memory.py      Qdrant store (3 collections), fastembed, redaction, labelling
   agents.py      8 agent personas + system prompts
@@ -446,9 +451,13 @@ app/
   tunnel.py      cloudflared / ngrok launcher
   hub.py         WebSocket broadcast + playback sync
   config.py      .env settings
-static/
-  landing.html   Three.js landing page (bloom, GSAP ScrollTrigger)
-  council.html   the council app (Tailwind + GSAP + Three.js via CDN, Web Speech API, no build step)
+web/                       Next.js 16 frontend (App Router, TypeScript, Tailwind v4), exported statically
+  app/page.tsx             landing page
+  app/council/             council app route + its stylesheet
+  components/landing/      3D hero (Three.js + bloom), nav, live stats, scroll reveals
+  components/council/      header, phone feed, round table, dock, side panel, verdict, constellation, …
+  lib/api.ts, lib/types.ts typed REST client and every server/WebSocket payload
+  lib/council/             zustand store, WebSocket event reducer, stage FX engine (GSAP), voices + playback queue
 data/
   seed_memories.json       42 entries over 3 weeks (40 saved, 2 noise)
   demo_omi_session.json    Omi-format webhook replays for /simulate
@@ -498,7 +507,7 @@ Dockerfile                 production container
 **Backend:** Python, FastAPI, Uvicorn, WebSockets, httpx, qdrant-client, fastembed (ONNX), NumPy (PCA)
 **AI & data:** Lyzr Agent API (8 agents, gpt-4o-mini), Qdrant (Cloud / Docker / embedded), BAAI/bge-small-en-v1.5
 **Voice & device:** Omi mobile app webhooks + Omi Developer API, Web Speech API (speech synthesis + recognition)
-**Frontend:** Three.js (bloom post-processing, OrbitControls), GSAP (+ ScrollTrigger), Tailwind CDN. A single HTML file per page, no build step.
+**Frontend:** Next.js 16 (App Router, static export), React 19, TypeScript, Tailwind CSS v4, zustand, Three.js (bloom post-processing, OrbitControls), GSAP (+ ScrollTrigger), lucide icons.
 **Infra:** cloudflared quick tunnel (or ngrok)
 
 See **[DEMO_SCRIPT.md](DEMO_SCRIPT.md)** for the 5-minute demo walkthrough.

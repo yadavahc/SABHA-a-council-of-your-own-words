@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
-STATIC = ROOT / "static"
+WEB_DIST = ROOT / "web" / "out"  # Next.js static export (cd web && npm run build)
 load_dotenv(ROOT / ".env")
 
 
